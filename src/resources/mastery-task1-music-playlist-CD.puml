@@ -1,1 +1,97 @@
 PARTICIPANTS: use this file for creating the class diagram in mastery task 01
+
+@startuml
+enum SongOrder {
+    DEFAULT
+    REVERSED
+    SHUFFLED
+}
+
+class Playlist {
+    -@DynamoDBHashKey id: String
+    -name: String
+    -customerId: String
+    -songCount: Integer
+    -tags: Set<String>
+    -songList: List<AlbumTrack>
+}
+
+class AlbumTrack {
+    -@DynamoDBHashKey asin: String
+    -@DynamoDBRangeKey trackNumber: Integer
+    -albumName: String
+    -songTitle: String
+}
+
+class AlbumTrackDao {
+    -dynamoDbMapper: DynamoDBMapper
+
+}
+
+class PlaylistDao {
+    -dynamoDbMapper: DynamoDBMapper
+
+    +getPlaylist(id: String): Playlist
+}
+
+class AddSongToPlaylistActivity {
+    -log: Logger
+    -playlistDao: PlaylistDao
+    -albumTrackDao: AlbumTrackDao
+    +handleRequest(addSongToPlaylistRequest: AddSongToPlaylistRequest, context: Context): AddSongToPlaylistResult
+}
+
+class CreatePlaylistActivity {
+    -log: Logger
+    - playlistDao: PlaylistDao
+    +handleRequest(createPlaylistRequest: CreatePlaylistRequest, context: Context): CreatePlaylistResult
+}
+
+class GetPlaylistActivity {
+    -log: Logger
+    -playlistDao: PlaylistDao
+    +handleRequest(getPlaylistRequest: GetPlaylistRequest, context: Context): GetPlaylistResult
+
+}
+
+class GetPlaylistSongsActivity {
+    -log: Logger
+    -playlistDao: PlaylistDao
+    +handleRequest(getPlaylistSongsRequest: GetPlaylistSongsRequest, context: Context): GetPlaylistSongsResult
+}
+
+class UpdatePlaylistActivity {
+    -log: Logger
+    -playlistDao: PlaylistDao
+    +handleRequest(updatePlaylistRequest: UpdatePlaylistRequest, context: Context): UpdatePlaylistResult
+}
+
+class AlbumTrackNotFoundException {
+}
+
+class InvalidAttributeValueException {
+}
+
+class PlaylistNotFoundException {
+}
+
+RequestHandler <|-- AddSongToPlaylistActivity
+RequestHandler <|-- CreatePlaylistActivity
+RequestHandler <|-- GetPlaylistActivity
+RequestHandler <|-- GetPlaylistSongsActivity
+RequestHandler <|-- UpdatePlaylistActivity
+
+
+AddSongToPlaylistActivity o-- AlbumTrackDao
+AddSongToPlaylistActivity o-- PlaylistDao
+CreatePlaylistActivity o-- PlaylistDao
+GetPlaylistActivity o-- PlaylistDao
+GetPlaylistSongsActivity o-- PlaylistDao
+UpdatePlaylistActivity o-- PlaylistDao
+
+AlbumTrackNotFoundException --|> RuntimeException
+InvalidAttributeValueException --|> RuntimeException
+PlaylistNotFoundException --|> RuntimeException
+
+Playlist o-- AlbumTrack
+@enduml
