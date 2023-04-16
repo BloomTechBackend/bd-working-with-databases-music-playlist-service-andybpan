@@ -58,10 +58,10 @@ public class CreatePlaylistActivity implements RequestHandler<CreatePlaylistRequ
 
         //validation
         if (!MusicPlaylistServiceUtils.isValidString(createPlaylistRequest.getName())) {
-            throw new InvalidAttributeValueException("invalid customer name!");
+            throw new InvalidAttributeValueException("Invalid Playlist Name!");
         }
         if (!MusicPlaylistServiceUtils.isValidString(createPlaylistRequest.getCustomerId())) {
-            throw new InvalidAttributeValueException("invalid customer Id");
+            throw new InvalidAttributeValueException("Invalid Customer ID");
         }
 
         // Populate playlist object - check for null tags

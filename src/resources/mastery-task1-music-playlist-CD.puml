@@ -66,21 +66,20 @@ class UpdatePlaylistActivity {
     +handleRequest(updatePlaylistRequest: UpdatePlaylistRequest, context: Context): UpdatePlaylistResult
 }
 
-class AlbumTrackNotFoundException {
-}
+class AlbumTrackNotFoundException
+class PlaylistNotFoundException
 
-class InvalidAttributeValueException {
-}
+class InvalidAttributeValueException
+class InvalidAttributeChangeException
 
-class PlaylistNotFoundException {
-}
+class InvalidAttributeException
+
 
 RequestHandler <|-- AddSongToPlaylistActivity
 RequestHandler <|-- CreatePlaylistActivity
 RequestHandler <|-- GetPlaylistActivity
 RequestHandler <|-- GetPlaylistSongsActivity
 RequestHandler <|-- UpdatePlaylistActivity
-
 
 AddSongToPlaylistActivity o-- AlbumTrackDao
 AddSongToPlaylistActivity o-- PlaylistDao
@@ -89,9 +88,13 @@ GetPlaylistActivity o-- PlaylistDao
 GetPlaylistSongsActivity o-- PlaylistDao
 UpdatePlaylistActivity o-- PlaylistDao
 
-AlbumTrackNotFoundException --|> RuntimeException
-InvalidAttributeValueException --|> RuntimeException
-PlaylistNotFoundException --|> RuntimeException
+RuntimeException <|-- AlbumTrackNotFoundException
+RuntimeException <|-- PlaylistNotFoundException
+
+InvalidAttributeException <|-- InvalidAttributeValueException
+InvalidAttributeException <|-- InvalidAttributeChangeException
+
+RuntimeException <|-- InvalidAttributeException
 
 Playlist o-- AlbumTrack
 @enduml
