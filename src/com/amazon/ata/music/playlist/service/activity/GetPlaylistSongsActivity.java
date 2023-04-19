@@ -1,5 +1,8 @@
 package com.amazon.ata.music.playlist.service.activity;
 
+import com.amazon.ata.music.playlist.service.converters.ModelConverter;
+import com.amazon.ata.music.playlist.service.dynamodb.models.AlbumTrack;
+import com.amazon.ata.music.playlist.service.dynamodb.models.Playlist;
 import com.amazon.ata.music.playlist.service.models.requests.GetPlaylistSongsRequest;
 import com.amazon.ata.music.playlist.service.models.results.GetPlaylistSongsResult;
 import com.amazon.ata.music.playlist.service.models.SongModel;
@@ -12,6 +15,8 @@ import org.apache.logging.log4j.Logger;
 
 import javax.inject.Inject;
 import java.util.Collections;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Implementation of the GetPlaylistSongsActivity for the MusicPlaylistService's GetPlaylistSongs API.
@@ -46,8 +51,16 @@ public class GetPlaylistSongsActivity implements RequestHandler<GetPlaylistSongs
     public GetPlaylistSongsResult handleRequest(final GetPlaylistSongsRequest getPlaylistSongsRequest, Context context) {
         log.info("Received GetPlaylistSongsRequest {}", getPlaylistSongsRequest);
 
+        //If the playlist is not found, will throw a PlaylistNotFoundException
+        Playlist playlist = playlistDao.getPlaylist(getPlaylistSongsRequest.getId());
+
+        //  Next time, assert the order of the songs
+        List<AlbumTrack> albumTracks = playlist.getSongList();
+
+        List<SongModel> songModels = new ModelConverter().toSongModelList(albumTracks);
+
         return GetPlaylistSongsResult.builder()
-                .withSongList(Collections.singletonList(new SongModel()))
+                .withSongList(songModels)
                 .build();
     }
 }
