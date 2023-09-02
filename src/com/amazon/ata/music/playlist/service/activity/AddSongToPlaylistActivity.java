@@ -64,15 +64,21 @@ public class AddSongToPlaylistActivity implements RequestHandler<AddSongToPlayli
         //If the playlist is not found, will throw a PlaylistNotFoundException
         Playlist playlist = playlistDao.getPlaylist(addSongToPlaylistRequest.getId());
 
-        // If album ASIN or track number does not exist , will throw an AlbumTrackNotFoundException
-        AlbumTrack albumTrack = albumTrackDao.getAlbumTrack(addSongToPlaylistRequest.getAsin(),
+        // If album ASIN or track number does not exist, will throw an AlbumTrackNotFoundException
+        AlbumTrack song = albumTrackDao.getAlbumTrack(addSongToPlaylistRequest.getAsin(),
                 addSongToPlaylistRequest.getTrackNumber());
 
-        //  By default, will insert the new song to the end of the playlist
-        List<AlbumTrack> albumTracks = playlist.getSongList();
+        // Getting the Link list of songs
+        LinkedList<AlbumTrack> albumTracks = (LinkedList<AlbumTrack>) playlist.getSongList();
 
+        // By default, will insert the new song to the end of the playlist
         // QueueNext Check will be implemented next time
-        albumTracks.add(albumTrack);
+        if (addSongToPlaylistRequest.isQueueNext()) {
+            albumTracks.addFirst(song);
+        } else {
+            albumTracks.addLast(song);
+        }
+
         playlistDao.savePlaylist(playlist);
 
         List<SongModel> songModels = new ModelConverter().toSongModelList(albumTracks);

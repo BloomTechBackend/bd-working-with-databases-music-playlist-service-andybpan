@@ -3,6 +3,7 @@ package com.amazon.ata.music.playlist.service.activity;
 import com.amazon.ata.music.playlist.service.converters.ModelConverter;
 import com.amazon.ata.music.playlist.service.dynamodb.models.AlbumTrack;
 import com.amazon.ata.music.playlist.service.dynamodb.models.Playlist;
+import com.amazon.ata.music.playlist.service.models.SongOrder;
 import com.amazon.ata.music.playlist.service.models.requests.GetPlaylistSongsRequest;
 import com.amazon.ata.music.playlist.service.models.results.GetPlaylistSongsResult;
 import com.amazon.ata.music.playlist.service.models.SongModel;
@@ -54,8 +55,17 @@ public class GetPlaylistSongsActivity implements RequestHandler<GetPlaylistSongs
         //If the playlist is not found, will throw a PlaylistNotFoundException
         Playlist playlist = playlistDao.getPlaylist(getPlaylistSongsRequest.getId());
 
-        //  Next time, assert the order of the songs
+        // Order of songList
         List<AlbumTrack> albumTracks = playlist.getSongList();
+        SongOrder songOrder = getPlaylistSongsRequest.getOrder();
+
+        if (songOrder == null || songOrder.toString().equalsIgnoreCase("DEFAULT")) {
+            albumTracks = playlist.getSongList();
+        } else if (songOrder.toString().equalsIgnoreCase("SHUFFLED")) {
+            Collections.shuffle(albumTracks);
+        } else if (songOrder.toString().equalsIgnoreCase("REVERSED")) {
+            Collections.reverse(albumTracks);
+        }
 
         List<SongModel> songModels = new ModelConverter().toSongModelList(albumTracks);
 

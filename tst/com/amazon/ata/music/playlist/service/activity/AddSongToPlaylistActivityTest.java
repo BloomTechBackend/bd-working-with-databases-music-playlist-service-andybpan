@@ -53,10 +53,10 @@ public class AddSongToPlaylistActivityTest {
         when(albumTrackDao.getAlbumTrack(addedAsin, addedTracknumber)).thenReturn(albumTrackToAdd);
 
         AddSongToPlaylistRequest request = AddSongToPlaylistRequest.builder()
-            .withId(playlistId)
-            .withAsin(addedAsin)
-            .withTrackNumber(addedTracknumber)
-            .build();
+                .withId(playlistId)
+                .withAsin(addedAsin)
+                .withTrackNumber(addedTracknumber)
+                .build();
 
         // WHEN
         AddSongToPlaylistResult result = addSongToPlaylistActivity.handleRequest(request, null);
@@ -74,10 +74,10 @@ public class AddSongToPlaylistActivityTest {
         // GIVEN
         String playlistId = "missing id";
         AddSongToPlaylistRequest request = AddSongToPlaylistRequest.builder()
-                                               .withId(playlistId)
-                                               .withAsin("asin")
-                                               .withTrackNumber(1)
-                                               .build();
+                .withId(playlistId)
+                .withAsin("asin")
+                .withTrackNumber(1)
+                .build();
         when(playlistDao.getPlaylist(playlistId)).thenThrow(new PlaylistNotFoundException());
 
         // WHEN + THEN
@@ -92,10 +92,10 @@ public class AddSongToPlaylistActivityTest {
         String asin = "nonexistent asin";
         int trackNumber = -1;
         AddSongToPlaylistRequest request = AddSongToPlaylistRequest.builder()
-                                               .withId(playlistId)
-                                               .withAsin(asin)
-                                               .withTrackNumber(trackNumber)
-                                               .build();
+                .withId(playlistId)
+                .withAsin(asin)
+                .withTrackNumber(trackNumber)
+                .build();
 
         // WHEN
         when(playlistDao.getPlaylist(playlistId)).thenReturn(playlist);
@@ -122,11 +122,11 @@ public class AddSongToPlaylistActivityTest {
         when(albumTrackDao.getAlbumTrack(addedAsin, addedTracknumber)).thenReturn(albumTrackToAdd);
 
         AddSongToPlaylistRequest request = AddSongToPlaylistRequest.builder()
-                                               .withId(playlistId)
-                                               .withAsin(addedAsin)
-                                               .withTrackNumber(addedTracknumber)
-                                               .withQueueNext(false)
-                                               .build();
+                .withId(playlistId)
+                .withAsin(addedAsin)
+                .withTrackNumber(addedTracknumber)
+                .withQueueNext(false)
+                .build();
 
         // WHEN
         AddSongToPlaylistResult result = addSongToPlaylistActivity.handleRequest(request, null);
@@ -139,37 +139,4 @@ public class AddSongToPlaylistActivityTest {
         AlbumTrackTestHelper.assertAlbumTrackEqualsSongModel(albumTrackToAdd, lastSong);
     }
 
-//    @Test
-//    void handleRequest_validRequestWithQueueNextTrue_addsSongToBeginningOfPlaylist() {
-//        // GIVEN
-//        int startingPlaylistSize = 2;
-//        Playlist originalPlaylist = PlaylistTestHelper.generatePlaylistWithNAlbumTracks(startingPlaylistSize);
-//        String playlistId = originalPlaylist.getId();
-//
-//        // the new song to add to the playlist
-//        AlbumTrack albumTrackToAdd = AlbumTrackTestHelper.generateAlbumTrack(6);
-//        String addedAsin = albumTrackToAdd.getAsin();
-//        int addedTracknumber = albumTrackToAdd.getTrackNumber();
-//
-//        when(playlistDao.getPlaylist(playlistId)).thenReturn(originalPlaylist);
-//        when(playlistDao.savePlaylist(originalPlaylist)).thenReturn(originalPlaylist);
-//        when(albumTrackDao.getAlbumTrack(addedAsin, addedTracknumber)).thenReturn(albumTrackToAdd);
-//
-//        AddSongToPlaylistRequest request = AddSongToPlaylistRequest.builder()
-//                                               .withId(playlistId)
-//                                               .withAsin(addedAsin)
-//                                               .withTrackNumber(addedTracknumber)
-//                                               .withQueueNext(true)
-//                                               .build();
-//
-//        // WHEN
-//        AddSongToPlaylistResult result = addSongToPlaylistActivity.handleRequest(request, null);
-//
-//        // THEN
-//        verify(playlistDao).savePlaylist(originalPlaylist);
-//
-//        assertEquals(startingPlaylistSize + 1, result.getSongList().size());
-//        SongModel firstSong = result.getSongList().get(0);
-//        AlbumTrackTestHelper.assertAlbumTrackEqualsSongModel(albumTrackToAdd, firstSong);
-//    }
 }
